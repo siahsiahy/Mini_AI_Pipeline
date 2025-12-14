@@ -16,9 +16,9 @@ Given a raw SMS message as input, the model outputs a binary label indicating wh
 
 ### Motivation
 
-Spam messages usually contain misleading or promotional content. Many people find them annoying, and in some cases they can even have negative effects on users. Manually deleting such messages is time-consuming and inefficient, which is why an automatic classification method is needed.
+Modern spam messages or emails usually contain misleading or promotional contents. I think most people find these fancy messages annoying. And in some cases,they may even have a negative impact on users. However, delete such messages one by one is both time-consuming and inefficient. That is why the classification methods are needed.
 
-Because the task has clear inputs and outputs, it provides a good setting for comparing simple rule-based baseline methods with more advanced AI-based pipelines.
+The task has clear input and output, which provides a good setting for simple rule-based baseline methods and more advanced artificial intelligence-based pipelines.
 
 ---
 
@@ -29,10 +29,11 @@ Because the task has clear inputs and outputs, it provides a good setting for co
 #### My Baseline (Keyword-based spam scoring + fixed threshold)
 
 - **Method description:**  
-  A simple keyword-based heuristic is used as the baseline model. Each message is converted to lowercase and lightly preprocessed. A predefined list of spam-related keywords (e.g., *free*, *win*, *prize*, *discount*) is checked against the message text. The number of matched keywords is counted, and if this count exceeds a fixed threshold, the message is classified as spam; otherwise, it is classified as non-spam.
+  A simple keyword-based method is used as the baseline. The text of each message is first converted to lowercase and cleaned with basic preprocessing. Then, the model checks whether some common spam-related words (such as *free*, *win*, or *prize*) appear in the message. If enough of these keywords are found, the message is treated as spam; otherwise, it is considered a normal message.
+
 
 - **Why naïve:**  
-  This method relies on manually selected keywords rather than representations learned from data. It cannot capture semantic meaning or contextual information, and the decision rules are fixed rather than adaptive.
+  This method depends on the manually selected keywords, not the characteristics learned from the data. It does not understand the actual meaning or context of the message, and the rules used for classification will not change according to the data.
 
 - **Likely failure modes:**  
   - **False negatives:** Spam messages that do not contain predefined keywords  
@@ -50,13 +51,14 @@ Because the task has clear inputs and outputs, it provides a good setting for co
   A pre-trained sentence embedding model (**all-MiniLM-L6-v2**) from Sentence-Transformers is used to convert each message into a fixed-length dense vector. A logistic regression classifier is trained on top of the frozen embeddings to perform binary spam classification.
 
 - **Pipeline stages:**  
-  - **Preprocessing:** Lowercasing and removal of extra whitespace  
-  - **Embedding:** Each message is encoded into a semantic embedding using the pre-trained model  
-  - **Classification:** Logistic regression is trained on the embeddings, with the regularization parameter selected using validation data  
-  - **Post-processing:** The final model outputs binary predictions and is evaluated using accuracy, precision, recall, and F1 score on the test set  
+  - **Preprocessing:** Lowercasing, removal of extra whitespace  
+  - **Embedding:** Each message is encoded into semantic embedding with a pre-trained model. 
+  - **Classification:** Logical regression is trained on embedding and uses verification data to select regularization parameters.
+  - **Post-processing:** The final model outputs binary predictions and evaluates them using the accuracy, precision, recall and F1 score on the test set.
 
 - **Design choices and justification:**  
-  Logistic regression is chosen as a lightweight and interpretable classifier that works well with fixed-size embeddings and small datasets. The embedding model is frozen, and only the downstream classifier is trained, which reduces computational cost and the risk of overfitting. Validation-based hyperparameter tuning ensures fair model selection without leaking test data.
+  We use logistic regression as a lightweight and interpretable classifier for fixed-size embeddings and small data. The embedding model is frozen and only the downstream classifier is trained for simplicity and not for overfitting. The hyperparameter tuning ensures fair model selection without leaking test data.
+
 
 ---
 
@@ -81,7 +83,7 @@ Because the task has clear inputs and outputs, it provides a good setting for co
 
 #### 1. Metric values for baseline vs. pipeline
 
-The naïve keyword-based baseline achieves reasonable accuracy but low recall, meaning that many spam messages are missed. In contrast, the AI pipeline significantly improves recall and F1 score while maintaining high precision. Overall, the embedding-based classifier provides more balanced and robust performance than the baseline.
+The keyword-based baseline has achieved good accuracy, but its recall is still low. This means that some spam has not been detected. Compared with this baseline, the performance of the artificial intelligence pipeline in terms of recall and F1 scores shows better results, while still maintaining high accuracy. In general, embedded-based classifiers show more stable and balanced performance than the baseline.
 
 #### 2. Results Table
 
@@ -108,7 +110,7 @@ The naïve keyword-based baseline achieves reasonable accuracy but low recall, m
 
 ## 4. Reflection and Limitations
 
-From the results, the AI pipeline clearly outperforms the naïve baseline. The embedding-based approach is able to capture semantic information beyond surface-level keywords and make context-aware decisions. Using a pre-trained sentence embedding model allows good performance without expensive training from scratch. However, I think threshold selection is particularly important, as small changes can significantly affect the trade-off between accuracy and recall. The naïve baseline struggles with implicit spam messages and produces both false negatives and false positives. Accuracy alone is not sufficient to evaluate model quality, so precision, recall, and F1 score are more informative metrics. One limitation of this work is that the embedding model was not fine-tuned on the SMS dataset. With more time or computational resources, I would experiment with fine-tuning the embeddings or trying other classifiers.
+From the results, the AI pipeline clearly outperforms the naïve baseline. The embedding-based approach is able to capture semantic information beyond surface-level keywords and make context-aware decisions. Using a pre-trained sentence embedding model allows good performance without expensive training from scratch. However, I think threshold selection is particularly important, as small changes can significantly affect the trade-off between accuracy and recall. The naïve baseline works for implicit spam messages and shows false negatives and false positives. Accuracy is not sufficient to measure the quality of a model, so precision, recall and F1 score should be better indicators. A limitation of this work is that it was not manually tuned for the SMS data. With more time or more computational resources, I could work on fine-tuning the embeddings or the other classifiers.
 
 ---
 
