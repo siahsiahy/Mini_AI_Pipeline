@@ -1,5 +1,5 @@
-torch
-torchvision
 numpy
 scikit-learn
-matplotlib
+datasets
+sentence-transformers
+torch
