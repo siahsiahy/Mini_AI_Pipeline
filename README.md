@@ -1,7 +1,7 @@
 # CAS2105 Homework 6: Mini AI Pipeline Project 🤗
 
-**Author:** Yan Shiyu (2021147609)
-
+**Name:** YAN SHIYU
+**Student ID:** 2021147609
 ---
 
 ## 1. Introduction
